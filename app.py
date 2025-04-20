@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import unidecode
+from io import BytesIO
 
 st.set_page_config(page_title="App de Vendas e Consumo", layout="wide")
 st.title("📊 Análises do Restaurante")
@@ -98,11 +99,6 @@ if file_vendas:
     st.subheader("📋 Resumo Final Agrupado")
     st.dataframe(resumo_df, use_container_width=True)
 
-# ========================== ANALISADOR DE CONSUMO ==========================
-st.header("📦 Análise de Consumo de Estoque")
-file_consumo = st.file_uploader("Faça upload da planilha de CONSUMO", type=["xlsx"], key="consumo")
-
-if file_consumo:
-    st.success("✅ Módulo de consumo será integrado aqui com lógica definida anteriormente.")
-else:
-    st.info("👆 Envie a planilha de consumo para ativar este módulo.")
+    excel_vendas = BytesIO()
+    resumo_df.to_excel(excel_vendas, index=False, engine='openpyxl')
+    st.download_button("📥 Baixar Análise de Vendas (.xlsx)", data=excel_vendas.getvalue(), file_name="analise_maiores_vendas.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
